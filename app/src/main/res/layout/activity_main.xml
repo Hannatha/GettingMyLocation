@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Known Location: " />
+
+        <TextView
+            android:id="@+id/tvLatitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude: " />
+
+        <TextView
+            android:id="@+id/tvLongitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Longitude: " />
+
+    </LinearLayout>
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Get Location Update" />
+
+        <Button
+            android:id="@+id/btnRemoveUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Remove Location Update"
+            android:textSize="13dp" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnCheckRecord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check Record" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
