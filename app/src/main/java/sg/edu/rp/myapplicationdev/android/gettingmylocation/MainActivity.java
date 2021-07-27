@@ -9,8 +9,10 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -44,10 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private GoogleMap map;
     Button btnGetLocation, btnRemoveLocationUpdate, btnCheckRecords;
     TextView tvLat, tvLong;
+    ToggleButton tbMusic;
     LatLng downtownCore;
     LocationRequest mLocationRequest;
     LocationCallback mLocationCallback;
     Marker central;
+    LatLng newloc;
+    Location data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         btnGetLocation = findViewById(R.id.btnUpdate);
         btnRemoveLocationUpdate = findViewById(R.id.btnRemoveUpdate);
         btnCheckRecords = findViewById(R.id.btnCheckRecord);
-
+        tbMusic = findViewById(R.id.tbMusic);
         tvLat = findViewById(R.id.tvLatitude);
         tvLong = findViewById(R.id.tvLongitude);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             tvLong.setText(location.getLongitude() + "");
 
                             downtownCore = new LatLng(location.getLatitude(), location.getLongitude());
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(downtownCore, 11));
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(downtownCore, 18));
                             central = map.addMarker(new MarkerOptions()
                                     .position(downtownCore)
                                     .title("Last Location")
@@ -123,80 +128,20 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Gmap-Permission", "Gps access has not been granted");
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
                 }
-
-
             }
         });
 
         btnGetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermission();
-
-                mLocationRequest = LocationRequest.create();
-                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                mLocationRequest.setInterval(30000);
-                mLocationRequest.setFastestInterval(5000);
-                mLocationRequest.setSmallestDisplacement(500);
-
-                mLocationCallback = new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        if (locationResult != null) {
-                            Location data = locationResult.getLastLocation();
-                            double lat = data.getLatitude();
-                            double lng = data.getLongitude();
-                            String msg = "Lat:" + lat + " Lng:" + lng;
-                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            tvLat.setText(lat + "");
-                            tvLong.setText(lng + "");
-                            downtownCore = new LatLng(lat, lng);
-
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(downtownCore, 11));
-
-
-                            LatLng newloc = new LatLng(data.getLatitude(), data.getLongitude());
-                            if (central == null) {
-                                central = map.addMarker(new MarkerOptions()
-                                        .position(newloc)
-                                        .title("Last Location")
-                                        .snippet("user's last location")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                            } else {
-                                central.setPosition(newloc);
-                                try {
-                                    String folderLocation_I = getFilesDir().getAbsolutePath() + "/Folder";
-                                    File targetFile_I = new File(folderLocation_I, "location.txt");
-                                    FileWriter writer_I = new FileWriter(targetFile_I, true);
-                                    writer_I.write(newloc.latitude + "," + newloc.longitude + "\n");
-                                    writer_I.flush();
-                                    writer_I.close();
-                                } catch (Exception e) {
-                                    Toast.makeText(MainActivity.this, "Failed to write!", Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                        }
-
-                    }
-
-                    ;
-
-
-                };
-
-                client.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-
+                startService(new Intent(MainActivity.this, LocationService.class));
             }
         });
 
         btnRemoveLocationUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermission();
-                client.removeLocationUpdates(mLocationCallback);
+                stopService(new Intent(MainActivity.this, LocationService.class));
             }
         });
 
@@ -209,6 +154,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        tbMusic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startService(new Intent(MainActivity.this, MyService.class));
+                } else {
+                    stopService(new Intent(MainActivity.this, MyService.class));
+                }
+            }
+        });
+
 
     }
 
@@ -217,13 +173,15 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
         int permissionCheck_Fine = ContextCompat.checkSelfPermission(
                 MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
-
+        int permissionCheck_External = ContextCompat.checkSelfPermission(
+                MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck_Coarse == PermissionChecker.PERMISSION_GRANTED
-                || permissionCheck_Fine == PermissionChecker.PERMISSION_GRANTED) {
+                || permissionCheck_Fine == PermissionChecker.PERMISSION_GRANTED || permissionCheck_External == PermissionChecker.PERMISSION_GRANTED) {
             return true;
         } else {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             return false;
         }
     }

@@ -10,27 +10,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Known Location: " />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvLatitude"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Known Location: " />
+
+            <TextView
+                android:id="@+id/tvLatitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latitude: " />
+
+            <TextView
+                android:id="@+id/tvLongitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Longitude: " />
+
+        </LinearLayout>
+        <ToggleButton
+            android:id="@+id/tbMusic"
+            android:layout_marginLeft="170dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Latitude: " />
-
-        <TextView
-            android:id="@+id/tvLongitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Longitude: " />
-
+            android:checked="false"
+            android:textOff="Music Off"
+            android:textOn="Music On"/>
     </LinearLayout>
-
 
     <fragment
         android:id="@+id/map"
@@ -47,20 +60,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btnUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Get Location Update" />
 
-        <Button
-            android:id="@+id/btnRemoveUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Remove Location Update"
-            android:textSize="13dp" />
+            <Button
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start detector" />
+
+            <Button
+                android:id="@+id/btnRemoveUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Stop detector"
+                android:textSize="13dp" />
 
         </LinearLayout>
 

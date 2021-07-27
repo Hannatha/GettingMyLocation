@@ -17,14 +17,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Refresh"
-            android:layout_marginRight="20dp"/>
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btnFavourites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favourites"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tvRecords"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Number of Records: "
-            android:textSize="20dp"/>
+            android:layout_weight="1"
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
